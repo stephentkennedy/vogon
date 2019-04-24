@@ -19,7 +19,7 @@ The Current configuration is set up to use database configured routes, but can e
 This is a collection of item's that I find myself reaching over and over again any time I start a data-driven project. It's enough that I can just start solving the problems the project is presenting, but flexible enough that it shouldn't get in the way of whatever needs to be done.
 
 So far, I've used Vogon for:
-* A self caching full website crawler for SEO and Optimization testings.
+* A self caching full website crawler for SEO and Optimization testing.
 * Migrating a forum from a Microsoft Access database to a MySQL database in a different forum framework
 * Pulling and consolidating bad actor IPs from server logs
 * Splitting a 1,000,000+ row XLSX file into managable chunks
