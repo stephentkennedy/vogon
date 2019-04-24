@@ -1,7 +1,7 @@
 <?php
 class thumb extends PDO{
 	public $error = false;
-	public function __construct($file = __DIR__.'/config.ini'){
+	public function __construct($file = __DIR__.DIRECTORY_SEPARATOR.'config.ini'){
 		$settings = parse_ini_file($file, true);
 		if($settings == false){
 			die('Unable to read settings file.');
@@ -19,9 +19,9 @@ class thumb extends PDO{
 		//Always safe rather than sorry
 		$this->beginTransaction();
 		$trans = $this->prepare($sql);
-		$trans = $this->binder($trans, $params);
+		//$trans = $this->binder($trans, $params);
 		try{
-			$trans->execute();
+			$trans->execute($params);
 			$this->commit();
 			return $trans;
 		}catch(PDOException $e){
