@@ -5,7 +5,7 @@ Date: 11/7/18
 Comment: This is the Babel Fish, or Fish for short. Named after the plot convenience from Douglas Adam's Hitchhiker's Guide, it's job is to allow us to communicate with the outside world via the CURL library, with limited fallback on file(http://) if CURL is not enabled.
 */
 class fish{
-	private $httpFlag = false;
+	public $httpFlag = false;
 	public $get;
 	public $post;
 	public $send;
@@ -16,16 +16,17 @@ class fish{
 		CURLOPT_RETURNTRANSFER => TRUE,
 		CURLOPT_FOLLOWLOCATION => TRUE,
 		CURLOPT_AUTOREFERER => TRUE,
-		CURLOPT_CONNECTTIMEOUT => 60,
-		CURLOPT_TIMEOUT => 60,
+		CURLOPT_CONNECTTIMEOUT => 443,
+		CURLOPT_TIMEOUT => 30,
 		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_SSL_VERIFYPEER => false //Almost never useful, so it defaults to off
+		CURLOPT_SSL_VERIFYPEER => 0, //Almost never useful, so it defaults to off
+		CURLOPT_SSL_VERIFYHOST => 0
 	];
 	public $url;
 	public $info;
 	
 	public function __construct(){
-		if(!function_exists('curl_init')){
+		if(function_exists('curl_init')){
 			$this->httpFlag = true;
 		}
 	}
@@ -102,11 +103,11 @@ class fish{
 	public function curl(){
 		$this->options[CURLOPT_URL] = $this->url;
 		$ch = curl_init();
-		if(count($this->post) > 0){
+		if(!empty($this->post) && count($this->post) > 0){
 			$this->options[CURLOPT_POST] = true;
 			$this->options[CURLOPT_POSTFIELDS] = $this->post;
 		}
-		if(count($this->get) > 0){
+		if(!empty($this->get) && count($this->get) > 0){
 			$string = '';
 			foreach($this->get as $key => $value){
 				$string .= urlencode($key).'='.urlencode($value).'&';
@@ -116,7 +117,11 @@ class fish{
 		}
 		curl_setopt_array($ch, $this->options);
 		$result = curl_exec($ch);
-		$this->info = curl_getinfo($ch);
+		if(curl_error($ch)){
+			$this->info = curl_error($ch);
+		}else{
+			$this->info = curl_getinfo($ch);
+		}
 		curl_close($ch);
 		return $result;
 	}
@@ -124,7 +129,7 @@ class fish{
 	//fopen based curl fallback
 	public function curl_fallback(){
 		$url = $this->url;
-		if(count($this->get) > 0){
+		if(!empty( $this->get) && count($this->get) > 0){
 			$string = '';
 			foreach($this->get as $key => $value){
 				$string .= urlencode($key).'='.urlencode($value).'&';
@@ -136,7 +141,7 @@ class fish{
 		return $returned;
 	}
 	
-	//Main data retreval function
+	//Main data retrieval function
 	public function dispatch(){
 		if($this->httpFlag == true){
 			$data = $this->curl();
