@@ -77,29 +77,6 @@ function dir_contents($dir, $ext_filter = false){
 	sort($return);
 	return $return;
 }
-
-function array_diff_exti($array1, $array2){
-	$temp_array1 = [];
-	foreach($array1 as $key => $value){
-		$temp = explode('.', $value);
-		array_pop($temp);
-		$temp = implode('.', $temp);
-		$temp_array1[$key] = $temp;
-	}
-	$temp_array2 = [];
-	foreach($array2 as $key => $value){
-		$temp = explode('.', $value);
-		array_pop($temp);
-		$temp = implode('.', $temp);
-		$temp_array2[$key] = $temp;
-	}
-	$temp_array = array_diff($temp_array1, $temp_array2);
-	$return_array = [];
-	foreach($temp_array as $key => $value){
-		$return_array[$key] = $array1[$key];
-	}
-	return $return_array;
-}
 /*
 Name: Stephen Kennedy
 Date: 10/5/19
