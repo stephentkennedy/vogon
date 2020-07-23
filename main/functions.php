@@ -193,12 +193,6 @@ function db_date($date){
 	return date('Y-m-d H:i:s', $date);
 }
 
-function debug_d($var){
-	echo '<pre>';
-	print_r($var);
-	echo '</pre>';
-}
-
 function recursiveScan($loc, $all = false){
 	$array = scandir($loc);
 	$return = [];

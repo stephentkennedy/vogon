@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.6.6deb5
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Dec 05, 2018 at 04:51 AM
--- Server version: 5.7.21
--- PHP Version: 7.0.29
+-- Host: localhost
+-- Generation Time: Jul 23, 2020 at 04:21 PM
+-- Server version: 10.3.22-MariaDB-0+deb10u1
+-- PHP Version: 7.3.19-1~deb10u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -19,24 +17,40 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `runescape`
+-- Database: `vogon`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `role`
+-- Table structure for table `data`
 --
 
-DROP TABLE IF EXISTS `role`;
-CREATE TABLE IF NOT EXISTS `role` (
-  `role_id` int(11) NOT NULL AUTO_INCREMENT,
-  `role_title` text NOT NULL,
-  `role_permissions` longtext NOT NULL,
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_edit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`role_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `data` (
+  `data_id` int(11) NOT NULL,
+  `data_name` tinytext NOT NULL,
+  `data_slug` text NOT NULL,
+  `data_content` longtext DEFAULT NULL,
+  `data_type` varchar(25) NOT NULL,
+  `data_parent` int(11) NOT NULL DEFAULT 0,
+  `data_status` varchar(25) DEFAULT NULL,
+  `create_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_edit` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_key` int(11) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `data_meta`
+--
+
+CREATE TABLE `data_meta` (
+  `data_meta_id` int(11) NOT NULL,
+  `data_id` int(11) NOT NULL,
+  `data_meta_name` tinytext NOT NULL,
+  `data_meta_content` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -44,61 +58,19 @@ CREATE TABLE IF NOT EXISTS `role` (
 -- Table structure for table `route`
 --
 
-DROP TABLE IF EXISTS `route`;
-CREATE TABLE IF NOT EXISTS `route` (
-  `route_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `route` (
+  `route_id` int(11) NOT NULL,
   `route_controller` text NOT NULL,
-  `route_ext` text,
-  `route_slug` text,
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_edit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_key` int(11) DEFAULT NULL,
-  PRIMARY KEY (`route_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `route`
---
-
-INSERT INTO `route` (`route_id`, `route_controller`, `route_ext`, `route_slug`, `create_date`, `last_edit`, `user_key`) VALUES
-(9, 'main', '', '', '2018-12-04 22:22:07', '2018-12-04 22:40:41', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `session`
---
-
-DROP TABLE IF EXISTS `session`;
-CREATE TABLE IF NOT EXISTS `session` (
-  `session_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_key` int(11) NOT NULL,
-  `session_key` text NOT NULL,
-  `session_ip` text NOT NULL,
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_edit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`session_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE IF NOT EXISTS `user` (
-  `user_key` int(11) NOT NULL AUTO_INCREMENT,
-  `user_role` int(11) NOT NULL,
-  `user_verified` tinyint(1) NOT NULL,
-  `user_email` text NOT NULL,
-  `user_pass` text NOT NULL,
-  `user_salt` text NOT NULL,
-  `user_role_mods` longtext,
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_edit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `route_ext` text DEFAULT NULL,
+  `ext_primary` tinyint(1) NOT NULL DEFAULT 0,
+  `route_slug` text DEFAULT NULL,
+  `in_h_nav` tinyint(1) NOT NULL DEFAULT 0,
+  `in_f_nav` tinyint(1) NOT NULL DEFAULT 0,
+  `nav_display` tinytext DEFAULT NULL,
+  `create_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_edit` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_key` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -106,20 +78,70 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Table structure for table `var`
 --
 
-DROP TABLE IF EXISTS `var`;
-CREATE TABLE IF NOT EXISTS `var` (
-  `var_id` int(11) NOT NULL AUTO_INCREMENT,
-  `var_session` tinyint(1) NOT NULL DEFAULT '0',
+CREATE TABLE `var` (
+  `var_id` int(11) NOT NULL,
+  `var_session` tinyint(1) NOT NULL DEFAULT 0,
   `var_name` text NOT NULL,
   `var_content` text NOT NULL,
-  `var_type` text,
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_edit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_key` int(11) NOT NULL,
-  PRIMARY KEY (`var_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-COMMIT;
+  `var_type` int(11) DEFAULT NULL,
+  `create_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_edit` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_key` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `data`
+--
+ALTER TABLE `data`
+  ADD PRIMARY KEY (`data_id`),
+  ADD KEY `data_type` (`data_type`);
+
+--
+-- Indexes for table `data_meta`
+--
+ALTER TABLE `data_meta`
+  ADD PRIMARY KEY (`data_meta_id`);
+
+--
+-- Indexes for table `route`
+--
+ALTER TABLE `route`
+  ADD PRIMARY KEY (`route_id`);
+
+--
+-- Indexes for table `var`
+--
+ALTER TABLE `var`
+  ADD PRIMARY KEY (`var_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `data`
+--
+ALTER TABLE `data`
+  MODIFY `data_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11937;
+--
+-- AUTO_INCREMENT for table `data_meta`
+--
+ALTER TABLE `data_meta`
+  MODIFY `data_meta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48659;
+--
+-- AUTO_INCREMENT for table `route`
+--
+ALTER TABLE `route`
+  MODIFY `route_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `var`
+--
+ALTER TABLE `var`
+  MODIFY `var_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
