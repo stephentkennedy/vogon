@@ -5,7 +5,7 @@ if(substr($request, 0, $trim) == URI){
 	$request = substr($request, $trim);
 }
 $request = explode('/', $request);
-$slug = $request[1];
+$slug = @$request[1];
 $sql = 'SELECT * FROM route WHERE route_slug = :slug';
 $params = [
 	':slug' => $slug
