@@ -1,24 +1,23 @@
 <?php
-/*
-Name: Stephen Kennedy
-Date: 12/4/2018
-Comment: Let's establish what we need for our bootstrap;
-*/
-$directories = explode(DIRECTORY_SEPARATOR,__DIR__);
-ini_set('display_errors', 1);
+//find and define ROOT Constant
+$directories = explode(DIRECTORY_SEPARATOR , __DIR__);
 array_pop($directories);
-$directories = implode(DIRECTORY_SEPARATOR,$directories);
+$directories = implode(DIRECTORY_SEPARATOR , $directories);
 define('ROOT', $directories);
 
 //Autoload classes from the auto folder.
-$auto_classes = scandir(__DIR__.DIRECTORY_SEPARATOR.'class'.DIRECTORY_SEPARATOR.'auto');
-foreach($auto_classes as $class){
-	if($class != '.' && $class != '..'){
-		include __DIR__.DIRECTORY_SEPARATOR.'class'.DIRECTORY_SEPARATOR.'auto'.DIRECTORY_SEPARATOR.$class;
+$autoload_folder = __DIR__ . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'auto';
+$auto_classes = scandir($autoload_folder);
+foreach($auto_classes as $class_file){
+	if($class_file != '.' && $class_file != '..'){
+		$class_name = str_replace(['class.', '.php'], '', $class_file);
+		if(!class_exists($class_name)){
+			include_once __DIR__ . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'auto' . DIRECTORY_SEPARATOR . $class_file;
+		}
 	}
 }
 
-//Define the constants from our settings
+//Set Contants From Settings
 $settings = parse_ini_file(__DIR__.DIRECTORY_SEPARATOR.'config.ini', true);
 $settings = $settings['app_constants'];
 foreach($settings as $const => $val){
