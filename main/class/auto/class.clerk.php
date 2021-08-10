@@ -3,7 +3,8 @@
 class clerk {
 	private $params, $where, $sql;
 	private $debug = false;
-	public $db, $total_count, $record = [];
+	public $db, $total_count; 
+	public $record = []; //Currently unused
 	
 	public function __construct($db = false){
 		if($db == false){
@@ -47,6 +48,9 @@ class clerk {
 		}
 		if(isset($values['user'])){
 			$this->buildParam($values['user'], 'user_key', 'user');
+		}
+		if(isset($values['create_date'])){
+			$this->buildParam($values['create_date'], 'create_date', 'create_date');
 		}
 		$set = implode(', ', $this->where);
 		$sql .= $set . ' WHERE data_id = :id';
@@ -178,6 +182,9 @@ class clerk {
 		}
 		if(isset($options['status'])){
 			$this->buildParam($options['status'], 'data_status', 'status');
+		}
+		if(isset($options['not_status'])){
+			$this->buildParam($options['not_status'], 'data_status', 'status', '!=');
 		}
 		if(isset($options['name'])){
 			$this->buildParam($options['name'], 'data_name', 'name');
@@ -320,6 +327,7 @@ class clerk {
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{
+			debug_d($this->db->error);
 			$records = [];
 		}
 		foreach($records as $r){
@@ -373,7 +381,7 @@ class clerk {
 			$where[] ='`data`.`data_name` LIKE :search_name';
 			$params[':search_name'] = '%'.$options['search_name'].'%';
 		}
-		if(isset($options['search_content'])){
+		if(isset($options['search_content']) || isset($options['content'])){
 			$where[] ='`data`.`data_content` LIKE :search_content';
 			$params[':search_content'] ='%'.$options['search_content'].'%';
 		}
@@ -398,6 +406,17 @@ class clerk {
 						$sub_where[] = 'm'.$key.'.data_meta_content = :search_meta';
 					}
 					break;
+				case 'is not':
+					//$params[':search_meta'] = $options['search_meta'];
+					foreach($options['metas'] as $key => $m){
+						$sub_where[] = 'm'.$key.'.data_meta_content IS NOT NULL';
+					}
+					break;
+				case 'is':
+					foreach($options['metas'] as $key => $m){
+						$sub_where[] = 'm'.$key.'.data_meta_content IS NULL';
+					}
+					break;
 			}
 			$where[] = '('.implode(' OR ', $sub_where).')';
 		}else if(isset($options['search_meta']) && is_array($options['search_meta'])){
@@ -418,6 +437,14 @@ class clerk {
 						$key = array_search($field, $options['metas']);
 						$where[] = 'm'.$key.'.data_meta_content = :search_meta'.$key;
 						$params[':search_meta'.$key] = $search;
+						break;
+					case 'is not':
+						$key = array_search($field, $options['metas']);
+						$where[] = 'm'.$key.'.data_meta_content IS NOT NULL';
+						break;
+					case 'is':
+						$key = array_search($field, $options['metas']);
+						$where[] = 'm'.$key.'.data_meta_content IS NULL';
 						break;
 				}
 			}
