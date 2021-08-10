@@ -46,6 +46,7 @@ function load_model($model, $parameters = [], $ext = false){
 	}
 	return load_file($model_file, $parameters);
 }
+
 function load_controller($controller, $parameters = [], $ext = false){
 	if($ext == false){
 		$controller_file = ROOT . DIRECTORY_SEPARATOR . 'main' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'controller.' . $controller . '.php';
@@ -79,6 +80,7 @@ function dir_contents($dir, $extension_filter = false){
 	sort($to_return);
 	return $to_return;
 }
+
 function filter_array_of_filenames_by_extension($items, $extension){
 	foreach($items as $key => $entry){
 		if(!compare_extension($entry, $extension)){
