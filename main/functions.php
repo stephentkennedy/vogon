@@ -124,7 +124,7 @@ function build_slug($uri, $params = [], $ext = false){
 			$slug_to_return .= '/'. $ext_slug;
 		}
 	}
-	$slug_to_return .= '/'.$uri;
+	$slug_to_return .= '/'.ltrim($uri, '/');
 	if(count($params) > 0){
 		$slug_to_return .= urlencode_get_values($params);
 	}

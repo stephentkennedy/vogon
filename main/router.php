@@ -22,4 +22,3 @@ if($db->error == false){
 }else{
 	echo $db->error->getMessage();
 }
-?>
