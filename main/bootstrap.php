@@ -26,11 +26,11 @@ foreach($settings as $const => $val){
 unset($settings);
 
 //Create our Database Connection
-$db = new thumb(__DIR__.DIRECTORY_SEPARATOR.'config.ini');
+$db = new thumb( __DIR__ . DIRECTORY_SEPARATOR . 'config.ini');
 
 //Include our framework functions
-include __DIR__.DIRECTORY_SEPARATOR.'functions.php';
+include __DIR__ . DIRECTORY_SEPARATOR . 'functions.php';
 
 //Include our router
-include __DIR__.DIRECTORY_SEPARATOR.'router.php';
+include __DIR__ . DIRECTORY_SEPARATOR . 'router.php';
 ?>
